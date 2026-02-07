@@ -1,5 +1,6 @@
 package com.app.config;
 
+import com.app.service.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -62,29 +63,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService());
+    public AuthenticationProvider authenticationProvider(UserDetailServiceImpl userDetailService){
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        List<UserDetails> userDetails = new ArrayList<>();
-        userDetails.add(User.withUsername("Lucas")
-                .password("1234")
-                .roles("ADMIN")
-                .authorities("READ","CREATE")
-                .build());
 
-        userDetails.add(User.withUsername("Gonzalo")
-                .password("1234")
-                .roles("USER")
-                .authorities("READ")
-                .build());
-
-        return new InMemoryUserDetailsManager(userDetails);
-    }
 
     public PasswordEncoder passwordEncoder(){
         return NoOpPasswordEncoder.getInstance();
