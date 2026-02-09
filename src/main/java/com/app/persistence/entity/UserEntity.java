@@ -1,4 +1,4 @@
-package com.app.config.persistence.entity;
+package com.app.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

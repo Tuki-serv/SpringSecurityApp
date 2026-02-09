@@ -16,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -29,33 +30,34 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
-//        return httpSecurity
-//                .csrf(csrf -> csrf.disable())
-//                .httpBasic(Customizer.withDefaults())
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(http ->{
-//                            // Configurar los endpoint publicos
-//                            http.requestMatchers(HttpMethod.GET, "/auth/hello").permitAll();
-//
-//                            // Configurar los endpoint privados
-//                            http.requestMatchers(HttpMethod.GET, "/auth/hello-secured").hasAuthority("CREATE");
-//
-//                            // Configurar el resto de endpoints - NO ESPECIFICADOS
-//                            http.anyRequest().denyAll();
-//                        })
-//        .build();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .build();
+                .authorizeHttpRequests(http ->{
+                            // Configurar los endpoint publicos
+                            http.requestMatchers(HttpMethod.GET, "/auth/get").permitAll();
+
+                            // Configurar los endpoint privados
+                            http.requestMatchers(HttpMethod.POST,"/auth/post").hasAnyRole("ADMIN","DEVELOPER");
+//                            http.requestMatchers(HttpMethod.POST, "/auth/post").hasAnyAuthority("CREATE","READ");
+                            http.requestMatchers(HttpMethod.PATCH, "/auth/patch").hasAnyAuthority("REFACTOR");
+                            // Configurar el resto de endpoints - NO ESPECIFICADOS
+                            http.anyRequest().denyAll();
+                        })
+        .build();
     }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
+//        return httpSecurity
+//                .csrf(csrf -> csrf.disable())
+//                .httpBasic(Customizer.withDefaults())
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .build();
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration){
@@ -72,6 +74,10 @@ public class SecurityConfig {
 
 
     public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
+//
+//    public static void main(String[] args){
+//        System.out.println(new BCryptPasswordEncoder().encode("123"));
+//    }
 }

@@ -1,7 +1,7 @@
 package com.app.service;
 
-import com.app.config.persistence.entity.UserEntity;
-import com.app.config.persistence.repository.UserRepository;
+import com.app.persistence.entity.UserEntity;
+import com.app.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
