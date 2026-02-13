@@ -1,4 +1,4 @@
-package util;
+package com.app.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
