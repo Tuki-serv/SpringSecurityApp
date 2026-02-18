@@ -43,7 +43,7 @@ public class SecurityConfig {
                             http.requestMatchers(HttpMethod.POST,"/method/post").hasAnyRole("ADMIN","DEVELOPER");
 //                            http.requestMatchers(HttpMethod.POST, "/auth/post").hasAnyAuthority("CREATE","READ");
                             http.requestMatchers(HttpMethod.PATCH, "/method/patch").hasAnyAuthority("REFACTOR");
-                            http.requestMatchers(HttpMethod.GET,"/method/get").hasAnyRole("INVITED");
+                            http.requestMatchers(HttpMethod.GET,"/method/get").hasAnyAuthority("READ");
                             // Configurar el resto de endpoints - NO ESPECIFICADOS
                             http.anyRequest().denyAll();
                         })

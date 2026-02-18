@@ -26,6 +26,7 @@ import com.app.util.JwtUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -102,13 +103,23 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         List<RoleEnum> roleEnums = roleRequest.stream()
                 .map(roleName-> {
-
+                    try{
+                        return RoleEnum.valueOf(roleName.toUpperCase());
+                    }catch (IllegalArgumentException e){
+                        return null;
+                    }
                 })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        Set<RoleEntity> roleEntitySet = roleRepository.findRoleEntitiesByRoleEnumIn(roleRequest).stream().collect(Collectors.toSet());
+        if (roleEnums.isEmpty()) {
+            throw new IllegalArgumentException("The roles specified does not exist");
+        }
+
+        Set<RoleEntity> roleEntitySet = roleRepository.findRoleEntitiesByRoleEnumIn(roleEnums).stream().collect(Collectors.toSet());
 
         if (roleEntitySet.isEmpty()) {
-            throw new IllegalArgumentException("The roles specified does not exist");
+            throw new IllegalArgumentException("No se encontraron los roles en la base de datos.");
         }
 
         UserEntity userEntity = UserEntity.builder()
